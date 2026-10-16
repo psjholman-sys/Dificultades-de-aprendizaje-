@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Educativo - Dificultades de Aprendizaje y Conducta</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              red: '#990000',
+              redHover: '#7a0000',
+              gold: '#D4AF37',
+              goldHover: '#B59226',
+              goldLight: '#FFF8E7',
+              cream: '#FAFAFA'
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #1e293b;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D4AF37;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #990000;
+    }
+
+    /* Card Glows and Shadows */
+    .gold-shadow {
+      box-shadow: 0 4px 20px -2px rgba(212, 175, 55, 0.15);
+    }
+    .red-shadow {
+      box-shadow: 0 4px 20px -2px rgba(153, 0, 0, 0.15);
+    }
+  </style>
+</head>
+<body class="bg-white min-h-screen flex flex-col md:flex-row overflow-x-hidden">
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="w-full md:w-64 bg-slate-900 border-r border-brand-gold/30 flex-shrink-0 flex flex-col justify-between z-20">
+    <div>
+      <!-- Header / Logo Area -->
+      <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-brand-red flex items-center justify-center text-brand-gold border border-brand-gold font-bold text-xl shadow-md">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div>
+            <h1 class="text-white font-bold text-base leading-tight">PsicoEdu</h1>
+            <p class="text-brand-gold text-xs font-semibold">Dashboard Interactivo</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="p-4 space-y-1">
+        <button onclick="switchTab('resumen')" id="nav-resumen" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all bg-brand-red text-white border-l-4 border-brand-gold">
+          <i class="fa-solid fa-chart-pie text-brand-gold"></i>
+          <span>Resumen General</span>
+        </button>
+
+        <button onclick="switchTab('caso')" id="nav-caso" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-all border-l-4 border-transparent">
+          <i class="fa-solid fa-user-ninja text-brand-gold"></i>
+          <span>Caso: Samuel</span>
+        </button>
+
+        <button onclick="switchTab('conceptos')" id="nav-conceptos" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-all border-l-4 border-transparent">
+          <i class="fa-solid fa-book-open text-brand-gold"></i>
+          <span>Conceptos Clave</span>
+        </button>
+
+        <button onclick="switchTab('actividades')" id="nav-actividades" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-all border-l-4 border-transparent">
+          <i class="fa-solid fa-gamepad text-brand-gold"></i>
+          <span>Taller & Quizzes</span>
+        </button>
+
+        <button onclick="switchTab('reflexion')" id="nav-reflexion" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-all border-l-4 border-transparent">
+          <i class="fa-solid fa-lightbulb text-brand-gold"></i>
+          <span>Auto-Reflexión</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="p-4 border-t border-slate-800 bg-slate-950/50">
+      <div class="flex items-center gap-3 px-2 py-2">
+        <div class="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center text-brand-red font-bold">
+          <i class="fa-solid fa-user-doctor text-sm"></i>
+        </div>
+        <div class="overflow-hidden">
+          <p class="text-xs font-bold text-slate-200 truncate">Psicología Educativa</p>
+          <p class="text-[10px] text-slate-400">Módulo de Evaluación</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-1 flex flex-col min-w-0 bg-slate-50 overflow-y-auto max-h-screen">
+
+    <!-- TOP BAR -->
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sticky top-0 z-10 shadow-sm">
+      <div>
+        <h2 id="page-title" class="text-2xl font-extrabold text-brand-red flex items-center gap-2">
+          Resumen General
+        </h2>
+        <p class="text-xs text-slate-500 font-medium">Identificación de las Dificultades de Aprendizaje y Conducta</p>
+      </div>
+
+      <!-- Quick Action Stats / Header Badges -->
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 bg-brand-goldLight border border-brand-gold/40 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-800">
+          <i class="fa-solid fa-trophy text-brand-gold"></i>
+          <span>Progreso: <span id="progress-text" class="text-brand-red">0%</span></span>
+        </div>
+        <button onclick="resetAllProgress()" class="text-xs bg-slate-100 hover:bg-brand-red hover:text-white text-slate-600 px-3 py-1.5 rounded-lg font-semibold transition border border-slate-200 flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate-right"></i> Reiniciar
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENT CONTAINERS -->
+    <div class="p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8">
+
+      <!-- ================= SECTION 1: RESUMEN GENERAL ================= -->
+      <section id="section-resumen" class="tab-content space-y-6">
+        
+        <!-- Banner Intro -->
+        <div class="bg-gradient-to-r from-brand-red to-slate-900 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden shadow-xl border-b-4 border-brand-gold">
+          <div class="absolute -right-10 -bottom-10 opacity-10 text-white text-9xl">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <div class="relative z-10 max-w-2xl">
+            <span class="inline-block bg-brand-gold text-brand-red font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider mb-3">
+              Módulo de Formación
+            </span>
+            <h3 class="text-2xl md:text-3xl font-extrabold leading-tight mb-3">
+              Identificación de Dificultades de Aprendizaje y Conducta
+            </h3>
+            <p class="text-slate-200 text-sm md:text-base leading-relaxed mb-6">
+              Aprende a diferenciar adecuadamente los trastornos del neurodesarrollo de otros problemas adaptativos, contextuales o emocionales para brindar los apoyos oportunos a cada estudiante.
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <button onclick="switchTab('caso')" class="bg-brand-gold hover:bg-brand-goldHover text-slate-950 font-bold px-5 py-2.5 rounded-xl text-sm transition shadow-md flex items-center gap-2">
+                <i class="fa-solid fa-play"></i> Iniciar Análisis de Caso
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Indicators Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition gold-shadow relative overflow-hidden">
+            <div class="w-12 h-12 bg-brand-goldLight text-brand-gold rounded-xl flex items-center justify-center font-bold text-xl mb-4 border border-brand-gold/30">
+              <i class="fa-solid fa-bullseye text-brand-red"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-lg mb-2">Resultado Esperado</h4>
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Comprender las dificultades de aprendizaje y conducta, así como las técnicas de adaptación curricular para mejorar el rendimiento académico.
+            </p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition red-shadow relative overflow-hidden">
+            <div class="w-12 h-12 bg-red-50 text-brand-red rounded-xl flex items-center justify-center font-bold text-xl mb-4 border border-brand-red/20">
+              <i class="fa-solid fa-magnifying-glass text-brand-gold"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-lg mb-2">Indicador 1: Conceptos</h4>
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Reconoce y diferencia la definición de las dificultades de aprendizaje vs. los problemas de conducta manifiestos en el aula.
+            </p>
+          </div>
+
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition gold-shadow relative overflow-hidden">
+            <div class="w-12 h-12 bg-brand-goldLight text-brand-gold rounded-xl flex items-center justify-center font-bold text-xl mb-4 border border-brand-gold/30">
+              <i class="fa-solid fa-chart-line text-brand-red"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-lg mb-2">Indicador 2: Causas</h4>
+            <p class="text-slate-600 text-sm leading-relaxed">
+              Comprende las causas y características principales, analizando su impacto directo en el rendimiento escolar de los estudiantes.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Metric / Summary Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <h4 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-list-check text-brand-red"></i> Progreso de Actividades del Dashboard
+          </h4>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <span id="stat-caso" class="block text-2xl font-extrabold text-brand-red">Pendiente</span>
+              <span class="text-xs text-slate-500 font-medium">Caso Samuel</span>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <span id="stat-conceptos" class="block text-2xl font-extrabold text-brand-gold">0 / 4</span>
+              <span class="text-xs text-slate-500 font-medium">Conceptos Explorados</span>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <span id="stat-quiz" class="block text-2xl font-extrabold text-brand-red">0%</span>
+              <span class="text-xs text-slate-500 font-medium">Quiz Rápido</span>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <span id="stat-reflexion" class="block text-2xl font-extrabold text-brand-gold">0 / 4</span>
+              <span class="text-xs text-slate-500 font-medium">Reflexiones Llenadas</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= SECTION 2: CASO PRÁCTICO SAMUEL ================= -->
+      <section id="section-caso" class="tab-content hidden space-y-6">
+        
+        <!-- Case Header -->
+        <div class="bg-white rounded-2xl p-6 border-l-8 border-brand-red shadow-sm border-y border-r border-slate-200">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="bg-brand-red text-white text-xs font-extrabold px-3 py-1 rounded-full uppercase">Estudio de Caso</span>
+            <span class="text-slate-400 text-xs font-semibold">• 5.º de Primaria</span>
+          </div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-2">El Caso de Samuel (10 Años)</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">
+            Analiza el siguiente escenario educativo y responde la pregunta orientadora para evaluar tu capacidad diagnóstica inicial.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Scenario Description -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 space-y-4 shadow-sm">
+            <h4 class="font-bold text-brand-red text-base border-b border-slate-100 pb-2 flex items-center gap-2">
+              <i class="fa-solid fa-file-invoice"></i> Reporte Docente
+            </h4>
+            <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
+              <p>
+                <strong class="text-slate-900">Lectura y Escritura:</strong> Su docente manifiesta que Samuel es inteligente, pero presenta severas dificultades para leer con fluidez, comete errores continuos al escribir y requiere mucho más tiempo que sus compañeros. Evita leer en voz alta.
+              </p>
+              <p>
+                <strong class="text-slate-900">Matemáticas:</strong> Comprende adecuadamente las explicaciones orales de la maestra, pero comete errores cuando las actividades o problemas requieren lectura e interpretación autónoma de instrucciones escritas.
+              </p>
+              <div class="bg-red-50 p-3 rounded-xl border border-red-200 text-brand-red text-xs font-medium italic">
+                <i class="fa-solid fa-quote-left mr-1"></i> "Samuel es muy distraído, no se esfuerza lo suficiente y necesita más disciplina y práctica en casa." - Docente.
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Question Quiz -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 space-y-4 shadow-sm">
+            <h4 class="font-bold text-slate-900 text-base border-b border-slate-100 pb-2 flex items-center gap-2">
+              <i class="fa-solid fa-circle-question text-brand-gold"></i> Diagnóstico Inicial
+            </h4>
+            <p class="text-xs text-slate-600 font-medium">
+              ¿Cuál podría ser la principal explicación de lo que le ocurre a Samuel?
+            </p>
+
+            <div class="space-y-2.5" id="caso-options">
+              <button onclick="checkCasoAnswer('A')" id="opt-A" class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-brand-gold hover:bg-brand-goldLight/50 text-slate-700 text-xs font-semibold transition flex items-center justify-between">
+                <span>A) Tiene poco interés por estudiar y baja motivación.</span>
+                <i class="fa-regular fa-circle text-slate-400"></i>
+              </button>
+
+              <button onclick="checkCasoAnswer('B')" id="opt-B" class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-brand-gold hover:bg-brand-goldLight/50 text-slate-700 text-xs font-semibold transition flex items-center justify-between">
+                <span>B) Presenta dificultades específicas de lectura y escritura.</span>
+                <i class="fa-regular fa-circle text-slate-400"></i>
+              </button>
+
+              <button onclick="checkCasoAnswer('C')" id="opt-C" class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-brand-gold hover:bg-brand-goldLight/50 text-slate-700 text-xs font-semibold transition flex items-center justify-between">
+                <span>C) Tiene una capacidad intelectual inferior a sus compañeros.</span>
+                <i class="fa-regular fa-circle text-slate-400"></i>
+              </button>
+
+              <button onclick="checkCasoAnswer('D')" id="opt-D" class="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-brand-gold hover:bg-brand-goldLight/50 text-slate-700 text-xs font-semibold transition flex items-center justify-between">
+                <span>D) Necesita mayor disciplina y supervisión estricta familiar.</span>
+                <i class="fa-regular fa-circle text-slate-400"></i>
+              </button>
+            </div>
+
+            <!-- Feedback Message -->
+            <div id="caso-feedback" class="hidden p-4 rounded-xl text-xs font-medium leading-relaxed"></div>
+          </div>
+
+        </div>
+
+        <!-- Reflection Prompts -->
+        <div class="bg-slate-900 text-white rounded-2xl p-6 border-t-4 border-brand-gold space-y-4">
+          <h4 class="text-base font-bold text-brand-gold flex items-center gap-2">
+            <i class="fa-solid fa-comments"></i> Preguntas para la Discusión Clínica
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+              <span class="text-brand-gold font-bold block mb-1">1. Información clave</span>
+              <p class="text-slate-300">¿Qué datos concretos del caso descartan que Samuel tenga una baja capacidad intelectual?</p>
+            </div>
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+              <span class="text-brand-gold font-bold block mb-1">2. Evaluación previa</span>
+              <p class="text-slate-300">¿Qué información adicional necesitarías investigar antes de concluir un diagnóstico formal?</p>
+            </div>
+            <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+              <span class="text-brand-gold font-bold block mb-1">3. Consecuencias</span>
+              <p class="text-slate-300">¿Qué impacto emocional sufre el estudiante cuando la dificultad se atribuye erróneamente a "falta de esfuerzo"?</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= SECTION 3: CONCEPTOS CLAVE ================= -->
+      <section id="section-conceptos" class="tab-content hidden space-y-6">
+        
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900">Catálogo de Dificultades y Trastornos</h3>
+            <p class="text-xs text-slate-500">Haz clic en cada tarjeta para marcarla como revisada y ver los detalles.</p>
+          </div>
+          <div class="text-xs font-semibold text-slate-600 bg-white px-3 py-1.5 rounded-lg border border-slate-200">
+            Explorados: <span id="concept-count" class="text-brand-red font-bold">0</span> de 4
+          </div>
+        </div>
+
+        <!-- Grid of Interactive Concept Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- Card 1: Dislexia -->
+          <div onclick="markConceptRead('dislexia')" id="card-dislexia" class="cursor-pointer bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:border-brand-gold transition duration-200 relative group">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-extrabold text-brand-red bg-red-50 px-2.5 py-1 rounded-md border border-red-100">Lectura</span>
+              <span id="badge-dislexia" class="text-xs font-bold text-slate-300"><i class="fa-solid fa-circle-check"></i> Non Visto</span>
+            </div>
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-red transition">Dislexia (Lectura)</h4>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Afecta la precisión, fluidez y comprensión lectora debido a dificultades en el procesamiento fonológico.
+            </p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1 text-xs">
+              <strong class="text-slate-800 block">Indicadores Clave:</strong>
+              <ul class="list-disc list-inside text-slate-600 space-y-0.5">
+                <li>Lectura lenta o silabeante.</li>
+                <li>Errores frecuentes y sustitución de palabras.</li>
+                <li>Dificultad para asociar letras y sonidos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 2: Disgrafía -->
+          <div onclick="markConceptRead('disgrafia')" id="card-disgrafia" class="cursor-pointer bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:border-brand-gold transition duration-200 relative group">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-extrabold text-brand-gold bg-brand-goldLight px-2.5 py-1 rounded-md border border-brand-gold/30">Escritura</span>
+              <span id="badge-disgrafia" class="text-xs font-bold text-slate-300"><i class="fa-solid fa-circle-check"></i> Non Visto</span>
+            </div>
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-gold transition">Disgrafía (Expresión Escrita)</h4>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Dificultades persistentes en la ortografía, la gramática, la estructuración de oraciones y la organización de textos.
+            </p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1 text-xs">
+              <strong class="text-slate-800 block">Indicadores Clave:</strong>
+              <ul class="list-disc list-inside text-slate-600 space-y-0.5">
+                <li>Textos muy breves desproporcionados a su expresión oral.</li>
+                <li>Errores ortográficos severos y continuos.</li>
+                <li>Desorganización espacial de las ideas.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 3: Discalculia -->
+          <div onclick="markConceptRead('discalculia')" id="card-discalculia" class="cursor-pointer bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:border-brand-gold transition duration-200 relative group">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-extrabold text-brand-red bg-red-50 px-2.5 py-1 rounded-md border border-red-100">Matemáticas</span>
+              <span id="badge-discalculia" class="text-xs font-bold text-slate-300"><i class="fa-solid fa-circle-check"></i> Non Visto</span>
+            </div>
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-red transition">Discalculia (Cálculo)</h4>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Alteración en el sentido numérico, la comprensión de magnitudes y la ejecución de operaciones matemáticas.
+            </p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1 text-xs">
+              <strong class="text-slate-800 block">Indicadores Clave:</strong>
+              <ul class="list-disc list-inside text-slate-600 space-y-0.5">
+                <li>Falla memorizando secuencias numéricas y tablas.</li>
+                <li>Dificultad para comparar cantidades rápidamente.</li>
+                <li>Confusión severa en procedimientos aritméticos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Card 4: TDAH y Atención -->
+          <div onclick="markConceptRead('tdah')" id="card-tdah" class="cursor-pointer bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:border-brand-gold transition duration-200 relative group">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-extrabold text-brand-gold bg-brand-goldLight px-2.5 py-1 rounded-md border border-brand-gold/30">Atención</span>
+              <span id="badge-tdah" class="text-xs font-bold text-slate-300"><i class="fa-solid fa-circle-check"></i> Non Visto</span>
+            </div>
+            <h4 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-gold transition">Funciones Ejecutivas & TDAH</h4>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+              Dificultad para sostener la atención, planificar, seguir instrucciones complejas o controlar impulsos.
+            </p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-1 text-xs">
+              <strong class="text-slate-800 block">Indicadores Clave:</strong>
+              <ul class="list-disc list-inside text-slate-600 space-y-0.5">
+                <li>Olvido de materiales e instrucciones habituales.</li>
+                <li>Extrema distracción con estímulos irrelevantes.</li>
+                <li>Dificultad para culminar tareas complejas.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Comparative Banner -->
+        <div class="bg-amber-50 rounded-2xl p-6 border border-brand-gold/40 flex flex-col sm:flex-row items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-brand-gold flex items-center justify-center text-white text-xl flex-shrink-0">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div class="text-xs text-slate-800 leading-relaxed">
+            <strong class="font-extrabold text-brand-red text-sm block mb-1">Diferenciación Crucial:</strong>
+            No toda dificultad académica es un trastorno del neurodesarrollo. La ansiedad, el acoso escolar (bullying), la falta de sueño o el ausentismo recurrente producen bajo rendimiento pero obedecen a causas emocionales o contextuales.
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= SECTION 4: TALLER & QUIZZES ================= -->
+      <section id="section-actividades" class="tab-content hidden space-y-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <!-- Interactive Quiz -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-vial text-brand-red"></i> Quiz de Verificación
+              </h3>
+              <span id="quiz-score-badge" class="bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-md">Puntaje: 0%</span>
+            </div>
+
+            <!-- Quiz Q1 -->
+            <div class="space-y-3">
+              <p class="text-xs font-bold text-slate-800">1. Un estudiante falta 4 semanas a clase y reprueba exámenes. ¿Se puede diagnosticar un trastorno específico?</p>
+              <div class="space-y-2 text-xs">
+                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                  <input type="radio" name="q1" value="no" onchange="evaluateQuiz()" class="accent-brand-red">
+                  <span>No, obedece a una causa contextual (ausentismo), no neurodesarrollativa.</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                  <input type="radio" name="q1" value="si" onchange="evaluateQuiz()" class="accent-brand-red">
+                  <span>Sí, el bajo rendimiento confirma automáticamente el trastorno.</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Quiz Q2 -->
+            <div class="space-y-3">
+              <p class="text-xs font-bold text-slate-800">2. ¿Cuál es el rol principal del psicólogo educativo ante estas dificultades?</p>
+              <div class="space-y-2 text-xs">
+                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                  <input type="radio" name="q2" value="etiquetar" onchange="evaluateQuiz()" class="accent-brand-red">
+                  <span>Etiquetar rápidamente al estudiante para sancionar su conducta.</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                  <input type="radio" name="q2" value="evaluar" onchange="evaluateQuiz()" class="accent-brand-red">
+                  <span>Identificar necesidades, guiar adaptaciones curriculares y derivar si aplica.</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="quiz-feedback" class="hidden p-3 rounded-lg text-xs font-bold text-center"></div>
+          </div>
+
+          <!-- Workshop / Detective Timer Module -->
+          <div class="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 shadow-sm flex flex-col justify-between space-y-6">
+            <div>
+              <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                <h3 class="font-bold text-brand-gold text-lg flex items-center gap-2">
+                  <i class="fa-solid fa-user-secret"></i> Reto: Detectives del Aprendizaje
+                </h3>
+                <span class="bg-brand-red text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded">Taller Grupal</span>
+              </div>
+              
+              <p class="text-xs text-slate-300 leading-relaxed mb-6">
+                Organízate en equipos. Utilicen el temporizador para resolver las 6 preguntas orientadoras del caso asignado antes de formular sus hipótesis finales.
+              </p>
+
+              <!-- Timer UI -->
+              <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center space-y-4">
+                <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold block">Tiempo Restante</span>
+                <div id="timer-display" class="text-5xl font-extrabold tracking-wider font-mono text-brand-gold">
+                  15:00
+                </div>
+                
+                <div class="flex justify-center gap-3">
+                  <button onclick="startTimer()" id="btn-start" class="bg-brand-red hover:bg-brand-redHover text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-play"></i> Iniciar
+                  </button>
+                  <button onclick="pauseTimer()" id="btn-pause" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-pause"></i> Pausa
+                  </button>
+                  <button onclick="resetTimer()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-left"></i> Reset
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-[11px] text-slate-400 bg-slate-800/50 p-3 rounded-xl border border-slate-800">
+              <i class="fa-solid fa-circle-info text-brand-gold mr-1"></i> Recuerden: No emitan diagnósticos apresurados sin recopilar evidencias del ambiente y la historia del desarrollo.
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ================= SECTION 5: AUTO-REFLEXIÓN ================= -->
+      <section id="section-reflexion" class="tab-content hidden space-y-6">
+        
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+          <div>
+            <h3 class="text-xl font-bold text-slate-900">Bitácora de Auto-Reflexión</h3>
+            <p class="text-xs text-slate-500">Completa las siguientes oraciones para sintetizar tus conocimientos adquiridos en este módulo.</p>
+          </div>
+
+          <div class="space-y-4 text-xs">
+            
+            <div class="space-y-1.5">
+              <label class="font-bold text-slate-800 block">1. Antes pensaba que una dificultad de aprendizaje era...</label>
+              <textarea id="ref-1" oninput="saveReflections()" rows="2" placeholder="Escribe tu respuesta aquí..." class="w-full p-3 rounded-xl border border-slate-200 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition text-xs"></textarea>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="font-bold text-slate-800 block">2. Ahora comprendo que...</label>
+              <textarea id="ref-2" oninput="saveReflections()" rows="2" placeholder="Escribe tu respuesta aquí..." class="w-full p-3 rounded-xl border border-slate-200 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition text-xs"></textarea>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="font-bold text-slate-800 block">3. Una señal clave que me parece importante observar en el aula es...</label>
+              <textarea id="ref-3" oninput="saveReflections()" rows="2" placeholder="Escribe tu respuesta aquí..." class="w-full p-3 rounded-xl border border-slate-200 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition text-xs"></textarea>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="font-bold text-slate-800 block">4. Algo que NUNCA debería hacer un psicólogo educativo es...</label>
+              <textarea id="ref-4" oninput="saveReflections()" rows="2" placeholder="Escribe tu respuesta aquí..." class="w-full p-3 rounded-xl border border-slate-200 focus:border-brand-gold focus:ring-1 focus:ring-brand-gold outline-none transition text-xs"></textarea>
+            </div>
+
+          </div>
+
+          <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+            <span id="ref-saved-status" class="text-xs text-slate-400 italic">Los cambios se guardan automáticamente.</span>
+            <button onclick="downloadReflections()" class="bg-brand-red hover:bg-brand-redHover text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
+              <i class="fa-solid fa-download"></i> Descargar Respuestas
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // State Management
+    let state = {
+      casoSolved: false,
+      conceptsRead: new Set(),
+      quizScore: 0,
+      reflectionsCount: 0
+    };
+
+    // TAB NAVIGATION
+    function switchTab(tabId) {
+      // Hide all contents
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      
+      // Reset button styles
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-brand-red', 'text-white', 'border-brand-gold');
+        btn.classList.add('text-slate-300', 'border-transparent');
+      });
+
+      // Show target content
+      document.getElementById(`section-${tabId}`).classList.remove('hidden');
+
+      // Highlight active nav button
+      const activeBtn = document.getElementById(`nav-${tabId}`);
+      activeBtn.classList.add('bg-brand-red', 'text-white', 'border-brand-gold');
+      activeBtn.classList.remove('text-slate-300', 'border-transparent');
+
+      // Update Page Title
+      const titles = {
+        resumen: 'Resumen General',
+        caso: 'Estudio de Caso: Samuel',
+        conceptos: 'Conceptos y Diagnóstico',
+        actividades: 'Taller & Evaluación',
+        reflexion: 'Auto-Reflexión'
+      };
+      document.getElementById('page-title').innerText = titles[tabId];
+    }
+
+    // CASE QUIZ LOGIC
+    function checkCasoAnswer(option) {
+      const feedback = document.getElementById('caso-feedback');
+      feedback.classList.remove('hidden');
+
+      if (option === 'B') {
+        feedback.className = "p-4 rounded-xl text-xs font-medium leading-relaxed bg-emerald-50 text-emerald-800 border border-emerald-200 block";
+        feedback.innerHTML = "<i class='fa-solid fa-circle-check text-emerald-600 mr-1.5'></i> <strong>¡Correcto!</strong> Los síntomas de Samuel apuntan a un trastorno específico de lectura y escritura (dislexia/disgrafía). Entiende instrucciones orales perfectamente, lo que descarta baja capacidad intelectual.";
+        state.casoSolved = true;
+      } else {
+        feedback.className = "p-4 rounded-xl text-xs font-medium leading-relaxed bg-rose-50 text-rose-800 border border-rose-200 block";
+        feedback.innerHTML = "<i class='fa-solid fa-circle-xmark text-rose-600 mr-1.5'></i> <strong>Incorrecto.</strong> Revisa las evidencias: Samuel comprende todo cuando se le explica verbalmente, descartando falta de capacidad o disciplina. El problema surge al leer y escribir.";
+      }
+      updateGlobalProgress();
+    }
+
+    // CONCEPTS TRACKER
+    function markConceptRead(id) {
+      state.conceptsRead.add(id);
+      
+      const card = document.getElementById(`card-${id}`);
+      const badge = document.getElementById(`badge-${id}`);
+
+      card.classList.add('border-brand-gold', 'bg-brand-goldLight/20');
+      badge.className = "text-xs font-bold text-brand-red";
+      badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Revisado';
+
+      document.getElementById('concept-count').innerText = state.conceptsRead.size;
+      updateGlobalProgress();
+    }
+
+    // QUIZ EVALUATION
+    function evaluateQuiz() {
+      const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+      const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+
+      let score = 0;
+      if (q1 === 'no') score += 50;
+      if (q2 === 'evaluar') score += 50;
+
+      state.quizScore = score;
+      
+      const badge = document.getElementById('quiz-score-badge');
+      const feedback = document.getElementById('quiz-feedback');
+      
+      badge.innerText = `Puntaje: ${score}%`;
+      feedback.classList.remove('hidden');
+
+      if (score === 100) {
+        badge.className = "bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md";
+        feedback.className = "p-3 rounded-lg text-xs font-bold text-center bg-emerald-50 text-emerald-700 border border-emerald-200 block";
+        feedback.innerText = "¡Excelente! Has comprendido los conceptos fundamentales.";
+      } else {
+        badge.className = "bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-md";
+        feedback.className = "p-3 rounded-lg text-xs font-bold text-center bg-amber-50 text-amber-700 border border-amber-200 block";
+        feedback.innerText = "Revisa las respuestas seleccionadas para obtener el 100%.";
+      }
+
+      updateGlobalProgress();
+    }
+
+    // WORKSHOP TIMER
+    let timerSeconds = 900; // 15 mins
+    let timerInterval = null;
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timer-display').innerText = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          alert('¡Tiempo del taller agotado!');
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timerSeconds = 900;
+      updateTimerDisplay();
+    }
+
+    // REFLECTIONS LOGIC
+    function saveReflections() {
+      let count = 0;
+      for (let i = 1; i <= 4; i++) {
+        if (document.getElementById(`ref-${i}`).value.trim().length > 5) {
+          count++;
+        }
+      }
+      state.reflectionsCount = count;
+      updateGlobalProgress();
+    }
+
+    function downloadReflections() {
+      const ref1 = document.getElementById('ref-1').value;
+      const ref2 = document.getElementById('ref-2').value;
+      const ref3 = document.getElementById('ref-3').value;
+      const ref4 = document.getElementById('ref-4').value;
+
+      const content = `BITÁCORA DE AUTO-REFLEXIÓN\n\n` +
+        `1. Antes pensaba que una dificultad de aprendizaje era:\n${ref1}\n\n` +
+        `2. Ahora comprendo que:\n${ref2}\n\n` +
+        `3. Señal importante a observar:\n${ref3}\n\n` +
+        `4. Lo que NUNCA debe hacer un psicólogo educativo:\n${ref4}\n`;
+
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Reflexion_Dificultades_Aprendizaje.txt';
+      a.click();
+    }
+
+    // GLOBAL PROGRESS CALCULATOR
+    function updateGlobalProgress() {
+      // Metrics
+      let progress = 0;
+      
+      // Case: 25%
+      if (state.casoSolved) progress += 25;
+      
+      // Concepts: 25% (6.25% each)
+      progress += Math.round((state.conceptsRead.size / 4) * 25);
+
+      // Quiz: 25%
+      progress += Math.round((state.quizScore / 100) * 25);
+
+      // Reflections: 25% (6.25% each)
+      progress += Math.round((state.reflectionsCount / 4) * 25);
+
+      // Update Header Text
+      document.getElementById('progress-text').innerText = `${progress}%`;
+
+      // Update Summary Cards
+      document.getElementById('stat-caso').innerText = state.casoSolved ? 'Resuelto' : 'Pendiente';
+      document.getElementById('stat-conceptos').innerText = `${state.conceptsRead.size} / 4`;
+      document.getElementById('stat-quiz').innerText = `${state.quizScore}%`;
+      document.getElementById('stat-reflexion').innerText = `${state.reflectionsCount} / 4`;
+    }
+
+    // RESET ALL
+    function resetAllProgress() {
+      state = {
+        casoSolved: false,
+        conceptsRead: new Set(),
+        quizScore: 0,
+        reflectionsCount: 0
+      };
+
+      // Reset UI elements
+      document.getElementById('caso-feedback').classList.add('hidden');
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+      document.getElementById('quiz-feedback').classList.add('hidden');
+      document.getElementById('quiz-score-badge').innerText = 'Puntaje: 0%';
+      document.getElementById('quiz-score-badge').className = "bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-md";
+
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`ref-${i}`).value = '';
+      }
+
+      ['dislexia', 'disgrafia', 'discalculia', 'tdah'].forEach(id => {
+        const card = document.getElementById(`card-${id}`);
+        const badge = document.getElementById(`badge-${id}`);
+        card.classList.remove('border-brand-gold', 'bg-brand-goldLight/20');
+        badge.className = "text-xs font-bold text-slate-300";
+        badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> No Visto';
+      });
+
+      document.getElementById('concept-count').innerText = '0';
+      resetTimer();
+      updateGlobalProgress();
+    }
+  </script>
+</body>
+</html>
